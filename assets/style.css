@@ -1,0 +1,43 @@
+:root{
+  --bg:#070312;
+  --bg2:#0d0720;
+  --panel:#0e0829;
+  --accent:#7a5cff;       /* tím neon */
+  --accent2:#2ef1ff;      /* xanh neon */
+  --text:#e7e7f2;
+  --muted:#a7a7be;
+  --card:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.15));
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 20% -10%, #1d1160 0%, transparent 55%), radial-gradient(900px 500px at 80% 0%, #003c7a 0%, transparent 55%), var(--bg);color:var(--text);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif}
+.container{max-width:1100px;margin:0 auto;padding:32px 22px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{opacity:.9;text-shadow:0 0 4px rgba(46,241,255,.5)}
+
+.site-header{border-bottom:1px solid rgba(255,255,255,.07)}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.site-title{margin:0;font-size:34px;letter-spacing:.5px;color:var(--accent)}
+.site-sub{margin:6px 0 0;color:var(--muted)}
+.logo img{height:56px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+.card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;box-shadow:0 10px 35px rgba(0,0,0,.35);transition:transform .15s ease, box-shadow .2s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.card-body{padding:16px}
+.card-title{margin:0 0 8px;font-size:18px;color:#fff}
+.card-meta{color:var(--muted);font-size:13px;margin-bottom:8px}
+.card-ex{color:#dfe2ff;font-size:14px;line-height:1.45}
+
+.post{display:block}
+.post-header{margin-bottom:18px}
+.post-title{font-size:38px;margin:0 0 6px;color:#fff;text-shadow:0 0 10px rgba(122,92,255,.25)}
+.post-meta{color:var(--muted)}
+.post-image img{width:100%;border-radius:14px;border:1px solid rgba(255,255,255,.06);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.post-content{margin-top:18px;background:var(--card);border:1px solid rgba(255,255,255,.06);padding:22px;border-radius:14px}
+.post-content h2, .post-content h3{color:#fff}
+.post-content p{line-height:1.75}
+.post-content ul{padding-left:18px}
+.post-ad{margin:24px 0}
+
+.site-footer{border-top:1px solid rgba(255,255,255,.07);margin-top:36px;color:var(--muted)}
