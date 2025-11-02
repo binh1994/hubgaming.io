@@ -1,0 +1,48 @@
+name: autogen
+
+on:
+  schedule:
+    - cron: "30 9 * * *"   # 09:30 UTC mỗi ngày
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: python -m pip install --upgrade pip
+
+      - name: Generate new post
+        run: |
+          python auto_generate.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "AutoPublisher"
+          git config user.email "actions@github.com"
+          git add _posts || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto new post $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+
+      - name: Ping Google
+        run: |
+          SITEMAP_URL=${{ secrets.SITEMAP_URL }}
+          if [ -z "$SITEMAP_URL" ]; then
+            SITEMAP_URL="https://hubgaming.io/sitemap.xml"
+          fi
+          curl -s "https://www.google.com/ping?sitemap=${SITEMAP_URL}" || true
