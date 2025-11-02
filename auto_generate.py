@@ -1,10 +1,9 @@
-
----
-
-## 12) `auto_generate.py` (bản **chống lỗi tuyệt đối**, sinh nội dung đa dạng, có ảnh, backlink gọn một lần ở cuối)
-```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Auto-generate daily post for HubGaming.io
+"""
+
 import os, random, datetime, textwrap
 
 DOMAINS = [
