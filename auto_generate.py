@@ -1,123 +1,100 @@
-import os, random, datetime, hashlib
+import os
+import random
+from datetime import datetime
 
-# ------------------------------
-# CONFIG
-# ------------------------------
+# ===== CONFIG =====
+SITE_NAME = "HubGaming AI"
+AUTHOR = "HubGaming Team"
 
 TITLES = [
-    "From VOD to Live Inference: AI Upgrades Esports Strategy in {}",
-    "Pro Playbook: Reinforcement Learning for High-Tempo Esports in {}",
-    "How AI Coaches are Replacing Analysts in {}",
-    "Meta Forecast: AI Draft Patterns & Win Probability Models for {}",
-    "Esports Anti-Cheat 3.0: Behavioral AI + Sensor Fusion in {}",
-    "Edge Inference: Zero-Latency AI for Competitive Gaming in {}",
+    "Pro Playbook: Reinforcement Learning for Esports Strategy in 2025",
+    "AI Coaching: How Pro Teams Train Smarter in High-Tempo Esports",
+    "From VOD to Live Inference: AI Telemetry Changing Esports",
+    "Meta Prediction AI: How Teams Counter Strategies Before They Happen",
+    "AI Esports Scrim Labs: Simulated Training for Pro Teams",
 ]
 
 PARAGRAPHS = [
-    "In high-stakes esports, milliseconds decide outcomes and good process beats raw talent. Elite teams treat operations like products: they ship strategy, measure impact, and roll back safely. AI elevates decision-making from intuition to instrumentation, turning VOD review into live inference.",
-    "Live labeling of mistakes turns demos into structured datasets for future training. Telemetry-informed coaching replaces guesswork with specific, testable interventions. AI-assisted scrims produce faster meta reactions and fewer unforced errors.",
     "AI-driven environments and adaptive economies make each session unique. The fusion of AI + blockchain is building valuable virtual economies with verifiable ownership.",
-    "Teams that ship weekly ‘ops builds’ see faster meta reactions and fewer unforced errors. Role clarity and economy rules stop micro mistakes from snowballing mid-series.",
+    "Elite teams treat operations like products: they ship strategy, measure impact, and roll back safely. High-stakes esports reward good process over raw talent.",
+    "Telemetry-informed coaching replaces guesswork with testable interventions. Role clarity and automated reviews reduce micro mistakes in long series.",
+    "Reinforcement learning agents help teams optimize tempo, rotations, vision control, and engagement precision.",
+    "Smart anti-cheat AI models detect unusual aim patterns, decision anomalies, and cross-input inconsistencies in milliseconds.",
 ]
 
-KEY_POINTS = [
-    "AI-driven strategy reduces tilt and improves clutch decision-making.",
-    "Behavioral anti-cheat detects unnatural aim, patterns, and movement.",
-    "Role clarity + economy rules reduce micro mistakes in long series.",
-    "Edge inference enables instant read → decide → act loops.",
+KEYPOINTS = [
+    "AI-driven strategy reduces tilt and improves decision-making under pressure.",
+    "Telemetry coaching eliminates guesswork and speeds up pro development.",
+    "Blockchain-verified assets increase player ownership and fan engagement.",
+    "Adaptive meta-training improves win consistency across patches.",
 ]
 
-NETWORK_DOMAINS = [
-    "botweb3ai.com", "botblockchain.io", "esportsai.io", "botplay.io",
-    "hubgaming.io", "bottradingai.com", "metaversebot.io", "nftgameai.com",
+BACKLINKS = [
+    ("botplay.io", "https://botplay.io"),
+    ("botweb3ai.com", "https://botweb3ai.com"),
+    ("metaversebot.io", "https://metaversebot.io"),
+    ("hubgaming.io", "https://hubgaming.io"),
+    ("bottradingai.com", "https://bottradingai.com"),
 ]
 
-# Image sources
-IMAGE_PRIMARY = [
-    "https://source.unsplash.com/1200x630/?esports,gaming,ai",
-    "https://source.unsplash.com/1200x630/?gaming",
-    "https://source.unsplash.com/1200x630/?tournament,esports",
-    "https://source.unsplash.com/1200x630/?controller,game",
-]
-
-IMAGE_FALLBACK = [
-    "https://picsum.photos/1200/630?random={rand}",
-    "https://picsum.photos/seed/{rand}/1200/630",
-]
-
-
-def pick_image_pair():
-    prim = random.choice(IMAGE_PRIMARY)
-    fb = random.choice(IMAGE_FALLBACK).replace("{rand}", str(random.randint(10000, 99999)))
-    return prim, fb
-
-
-# ------------------------------
-# GENERATE POST
-# ------------------------------
-
-def slugify(text):
-    return text.lower().replace(" ", "-").replace(":", "").replace("|", "").replace("—", "").replace("’", "")
+# ===== GENERATE POST =====
 
 def generate_post():
-    today = datetime.date.today()
-    year = today.year
-    title = random.choice(TITLES).format(year)
-    slug = slugify(title)
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    title = random.choice(TITLES)
+    safe_title = title.lower().replace(" ", "-").replace(":", "").replace("'", "")
+    filename = f"_posts/{today}-{safe_title}.md"
 
-    primary_img, fb_img = pick_image_pair()
+    # chọn 1 intro + 1 body không trùng
+    intro, body = random.sample(PARAGRAPHS, k=2)
 
-    filename = f"{today:%Y-%m-%d}-{slug}.md"
-    filepath = os.path.join("_posts", filename)
+    # random ảnh đẹp chất lượng cao
+    image_url = f"https://images.pexels.com/photos/{random.randint(1000000,9999999)}/pexels-photo.jpeg?auto=compress&cs=tinysrgb&w=1200"
 
-    fm = f"""---
+    # YAML + CONTENT BUILD
+    content = f"""---
 layout: post
 title: "{title}"
 date: {today}
-author: "HubGaming Team"
-description: "Esports + AI deep-dive: {title}"
-image: "{primary_img}"
-image_fallback: "{fb_img}"
+author: "{AUTHOR}"
+description: "AI + Esports insights auto-generated for {SITE_NAME}"
+image: "{image_url}"
 ---
+
+_This article was auto-generated by {SITE_NAME} (Authority SEO)._
+
+
+![{title}]({image_url})
+
+{intro}
+
+{body}
+
+### Key Insights
 """
 
-    hero = f"""
-<figure class="post-hero">
-  <img src="{primary_img}" alt="{title}" loading="eager" width="1200" height="630"
-       onerror="this.onerror=null;this.src='{fb_img}';">
-</figure>
-"""
-
-    content = fm + "\n" + hero + "\n"
-
-    content += f"_This article was auto-generated by HubGaming AI (Authority SEO)._ \n\n"
-
-    content += random.choice(PARAGRAPHS) + "\n\n"
-    content += random.choice(PARAGRAPHS) + "\n\n"
-
-    content += "## Key Insights\n"
-    for kp in random.sample(KEY_POINTS, k=3):
+    for kp in KEYPOINTS:
         content += f"- {kp}\n"
-    content += "\n"
 
-    content += "## Pro Team Case Study\n"
-    content += random.choice(PARAGRAPHS) + "\n\n"
+    # BACKLINK SECTION – ngắn gọn – không spam
+    content += "\n### Friendly Network\n"
+    for name, link in random.sample(BACKLINKS, k=3):
+        content += f"- [{name}]({link})\n"
 
-    content += "## AI Strategy Breakdown\n"
-    content += random.choice(PARAGRAPHS) + "\n\n"
+    # CTA
+    content += f"""
 
-    # Friendly network (safe)
-    content += "### Friendly Network\n"
-    sample_links = random.sample(NETWORK_DOMAINS, k=4)
-    for domain in sample_links:
-        content += f"- [{domain}](https://{domain})\n"
+**Conclusion:** AI-powered esports strategy will redefine competitive gaming — and {SITE_NAME} is tracking it daily.
 
-    with open(filepath, "w", encoding="utf-8") as f:
+"""
+
+    # Save file
+    os.makedirs("_posts", exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as f:
         f.write(content)
 
-    print(f"✅ Post generated: {filepath}")
+    print(f"✅ New post generated: {filename}")
 
 
 if __name__ == "__main__":
-    os.makedirs("_posts", exist_ok=True)
     generate_post()
