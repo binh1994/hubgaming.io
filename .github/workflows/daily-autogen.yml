@@ -2,8 +2,13 @@ name: autogen
 
 on:
   schedule:
-    - cron: "30 9 * * *"   # 09:30 UTC mỗi ngày
-  workflow_dispatch:
+    - cron: "0 7 * * *"   # 7:00 UTC (14:00 VN) – đổi nếu bạn muốn
+  workflow_dispatch: {}
+
+# Cho phép GitHub Actions push thẳng vào repo (không cần PAT)
+permissions:
+  contents: write
+  actions: read
 
 jobs:
   build:
@@ -13,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          persist-credentials: true  # dùng GITHUB_TOKEN sẵn có
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -21,28 +26,27 @@ jobs:
           python-version: "3.11"
 
       - name: Install deps
-        run: python -m pip install --upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
 
       - name: Generate new post
+        env:
+          SITE_DOMAIN: hubgaming.io
+          # OPENAI_API_KEY optional – nếu không có sẽ tạo bài theo template có sẵn
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python auto_generate.py
 
+      # An toàn nhất: dùng auto-commit action (không cần git push thủ công)
       - name: Commit and push
-        run: |
-          git config user.name "AutoPublisher"
-          git config user.email "actions@github.com"
-          git add _posts || true
-          if ! git diff --cached --quiet; then
-            git commit -m "Auto new post $(date -u +'%Y-%m-%d %H:%M UTC')"
-            git push
-          else
-            echo "No changes to commit."
-          fi
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto new post ${{ github.run_id }}"
+          file_pattern: "_posts/*.md"
+          branch: main
 
       - name: Ping Google
         run: |
-          SITEMAP_URL=${{ secrets.SITEMAP_URL }}
-          if [ -z "$SITEMAP_URL" ]; then
-            SITEMAP_URL="https://hubgaming.io/sitemap.xml"
-          fi
-          curl -s "https://www.google.com/ping?sitemap=${SITEMAP_URL}" || true
+          curl -s "https://www.google.com/ping?sitemap=https://hubgaming.io/sitemap.xml" || true
+          curl -s "https://www.google.com/ping?sitemap=https://hubgaming.io/sitemap.xml.gz" || true
